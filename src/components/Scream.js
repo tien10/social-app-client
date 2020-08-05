@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import {
   withStyles,
   CardContent,
@@ -16,7 +18,7 @@ const styles = {
     marginBottom: 20,
   },
   image: {
-    minWidth: 200,
+    minWidth: 125,
   },
   content: {
     padding: 25,
@@ -27,6 +29,7 @@ const styles = {
 class Scream extends Component {
   render() {
     // console.log(this.props); props gom: classes, scream
+    dayjs.extend(relativeTime);
     const {
       classes,
       scream: {
@@ -57,7 +60,8 @@ class Scream extends Component {
               {userHandle}
             </Typography>
             <Typography variant="body2" color="secondary">
-              {createdAt}
+              {/* post cach day bao lau roi */}
+              {dayjs(createdAt).fromNow()}
             </Typography>
             <Typography variant="body1">{body}</Typography>
           </CardContent>

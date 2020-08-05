@@ -27,6 +27,11 @@ const styles = {
   progress: {
     position: "absolute",
   },
+  customError: {
+    color: "red",
+    fontSize: "0.8rem",
+    marginTop: 10,
+  },
 };
 
 class Login extends Component {
@@ -55,6 +60,7 @@ class Login extends Component {
         // console.log(res);
         // console.log(this.props.history.push);
         // this.props.history.push("/signup");
+        localStorage.setItem("FBIdToken", `Bearer ${res.data.token}`);
         this.setState({
           loading: false,
         });
@@ -63,9 +69,12 @@ class Login extends Component {
         // this.props.history.go(-1);
       })
       .catch((err) => {
-        this.setState({ loading: false });
+        this.setState({
+          errors: err.response.data,
+          loading: false,
+        });
         // console.log(err);
-        alert("Dang nhap that bai!");
+        // alert("Dang nhap that bai!");
       });
   };
   handleChange = (e) => {
@@ -76,9 +85,10 @@ class Login extends Component {
   };
   render() {
     // console.log(this.props);
-    console.log(this.state.loading);
+    // console.log(this.state.loading);
     const { classes } = this.props;
-    const { loading } = this.state;
+    const { loading, errors } = this.state;
+    console.log(errors);
     return (
       <div>
         <Grid container className={classes.form}>
@@ -96,6 +106,8 @@ class Login extends Component {
                 label="Email"
                 value={this.state.email}
                 className={classes.textField}
+                helperText={errors.email}
+                error={errors.email ? true : false}
                 onChange={this.handleChange}
                 fullWidth
               />
@@ -106,9 +118,16 @@ class Login extends Component {
                 label="Password"
                 value={this.state.password}
                 className={classes.textField}
+                helperText={errors.password}
+                error={errors.password ? true : false}
                 onChange={this.handleChange}
                 fullWidth
               />
+              {errors.general && (
+                <Typography variant="body2" className={classes.customError}>
+                  {errors.general}
+                </Typography>
+              )}
               <Button
                 type="submit"
                 variant="contained"
@@ -123,7 +142,7 @@ class Login extends Component {
               </Button>
               <br />
               <small>
-                don't have an account ? sign up <Link to="/signup">here</Link>
+                Don't have an account? Sign up <Link to="/signup">here</Link>
               </small>
             </form>
           </Grid>
@@ -137,3 +156,4 @@ Login.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 export default withStyles(styles)(Login);
+// export default Login;

@@ -5,10 +5,10 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import {
   withStyles,
   CardContent,
-  CardActions,
+  // CardActions,
   CardMedia,
   Card,
-  CardActionArea,
+  // CardActionArea,
   Typography,
 } from "@material-ui/core";
 

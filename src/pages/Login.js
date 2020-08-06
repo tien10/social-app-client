@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import {
   withStyles,
@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 import AppIcon from "../images/icon.png";
 // import AppIcon from "../images/3.svg";
 // import AppIcon from "../images/ninja.png";
+import { connect } from "react-redux";
+import { loginUser } from "../redux/actions/userActions";
 const styles = {
   form: {
     textAlign: "center",
@@ -41,41 +43,48 @@ class Login extends Component {
       email: "",
       password: "",
       errors: {},
-      loading: false,
+      // loading: false,
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.UI.errors) {
+      this.setState({ errors: nextProps.UI.errors });
+    }
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({
-      loading: true,
-    });
+    // this.setState({
+    //   loading: true,
+    // });
     // console.log(e.target);
     const userData = {
       email: this.state.email,
       password: this.state.password,
     };
-    axios
-      .post("/login", userData)
-      .then((res) => {
-        // console.log(res);
-        // console.log(this.props.history.push);
-        // this.props.history.push("/signup");
-        localStorage.setItem("FBIdToken", `Bearer ${res.data.token}`);
-        this.setState({
-          loading: false,
-        });
-        this.props.history.push("/");
-        // console.log(this.props.history.push);
-        // this.props.history.go(-1);
-      })
-      .catch((err) => {
-        this.setState({
-          errors: err.response.data,
-          loading: false,
-        });
-        // console.log(err);
-        // alert("Dang nhap that bai!");
-      });
+    console.log(this.props);
+    this.props.loginUser(userData, this.props.history);
+    // axios
+    //   .post("/login", userData)
+    //   .then((res) => {
+    //     // console.log(res);
+    //     // console.log(this.props.history.push);
+    //     // this.props.history.push("/signup");
+    //     localStorage.setItem("FBIdToken", `Bearer ${res.data.token}`);
+    //     this.setState({
+    //       loading: false,
+    //     });
+    //     this.props.history.push("/");
+    //     // console.log(this.props.history.push);
+    //     // this.props.history.go(-1);
+    //   })
+    //   .catch((err) => {
+    //     this.setState({
+    //       errors: err.response.data,
+    //       loading: false,
+    //     });
+    //     // console.log(err);
+    //     // alert("Dang nhap that bai!");
+    //   });
   };
   handleChange = (e) => {
     // console.log(e.target.value);
@@ -86,9 +95,13 @@ class Login extends Component {
   render() {
     // console.log(this.props);
     // console.log(this.state.loading);
-    const { classes } = this.props;
-    const { loading, errors } = this.state;
-    console.log(errors);
+    const {
+      classes,
+      UI: { loading },
+    } = this.props;
+    const { errors } = this.state;
+    // console.log(errors);
+    // console.log(localStorage.FBIdToken);
     return (
       <div>
         <Grid container className={classes.form}>
@@ -154,6 +167,26 @@ class Login extends Component {
 }
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
+  loginUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(Login);
+
+const mapStatetoProps = (state) => ({
+  user: state.user,
+  UI: state.UI,
+});
+
+const mapActionstoProps = {
+  loginUser,
+};
+console.log(typeof loginUser);
+// export default connect(
+//   mapStatetoProps,
+//   mapActionstoProps
+// )(withStyles(styles)(Login));
+export default connect(
+  mapStatetoProps,
+  mapActionstoProps
+)(withStyles(styles)(Login));
 // export default Login;

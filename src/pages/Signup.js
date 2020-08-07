@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
 import {
   withStyles,
   Grid,
@@ -11,29 +9,33 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import AppIcon from "../images/icon.png";
+import { Link } from "react-router-dom";
 // import AppIcon from "../images/3.svg";
 // import AppIcon from "../images/ninja.png";
-const styles = {
-  form: {
-    textAlign: "center",
-  },
-  image: {
-    margin: "20px auto 20px auto",
-    // maxWidth: "64px",
-  },
-  pageTitle: { margin: "10px auto 10px auto" },
-  textField: { margin: "10px auto 10px auto" },
-  button: { marginTop: 20 },
-  progress: {
-    position: "absolute",
-  },
-  customError: {
-    color: "red",
-    fontSize: "0.8rem",
-    marginTop: 10,
-  },
-};
+import { connect } from "react-redux";
+import { signupUser } from "../redux/actions/userActions";
+// const styles = {
+//   form: {
+//     textAlign: "center",
+//   },
+//   image: {
+//     margin: "20px auto 20px auto",
+//     // maxWidth: "64px",
+//   },
+//   pageTitle: { margin: "10px auto 10px auto" },
+//   textField: { margin: "10px auto 10px auto" },
+//   button: { marginTop: 20 },
+//   progress: {
+//     position: "absolute",
+//   },
+//   customError: {
+//     color: "red",
+//     fontSize: "0.8rem",
+//     marginTop: 10,
+//   },
+// };
 
+const styles = (theme) => ({ ...theme.spreadThis });
 class Signup extends Component {
   constructor() {
     super();
@@ -43,8 +45,12 @@ class Signup extends Component {
       confirmPassword: "",
       handle: "",
       errors: {},
-      loading: false,
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.UI.errors) {
+      this.setState({ errors: nextProps.UI.errors });
+    }
   }
   handleSubmit = (e) => {
     e.preventDefault();
@@ -58,31 +64,32 @@ class Signup extends Component {
       confirmPassword: this.state.confirmPassword,
       handle: this.state.handle,
     };
-    axios
-      .post("/signup", newUserData)
-      .then((res) => {
-        // console.log(res);
-        // console.log(this.props.history.push);
-        // this.props.history.push("/signup");
-        localStorage.setItem("FBIdToken", `Bearer ${res.data.token}`);
-        this.setState({
-          loading: false,
-        });
-        this.props.history.push("/");
-        // console.log(this.props.history.push);
-        // this.props.history.go(-1);
-      })
-      .catch((err) => {
-        console.log(err.response);
-        this.setState({ loading: false, errors: err.response.data });
-        // if (this.state.errors) {
-        //   if (this.state.errors.data.error)
-        //     if (this.state.errors.data.error === "auth/weak-password")
-        //       alert("Password yeu!");
-        // }
-        // console.log(err);
-        // alert("Dang ky that bai!");
-      });
+    this.props.signupUser(newUserData, this.props.history);
+    // axios
+    //   .post("/signup", newUserData)
+    //   .then((res) => {
+    //     // console.log(res);
+    //     // console.log(this.props.history.push);
+    //     // this.props.history.push("/signup");
+    //     localStorage.setItem("FBIdToken", `Bearer ${res.data.token}`);
+    //     this.setState({
+    //       loading: false,
+    //     });
+    //     this.props.history.push("/");
+    //     // console.log(this.props.history.push);
+    //     // this.props.history.go(-1);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response);
+    //     this.setState({ loading: false, errors: err.response.data });
+    //     // if (this.state.errors) {
+    //     //   if (this.state.errors.data.error)
+    //     //     if (this.state.errors.data.error === "auth/weak-password")
+    //     //       alert("Password yeu!");
+    //     // }
+    //     // console.log(err);
+    //     // alert("Dang ky that bai!");
+    //   });
   };
   handleChange = (e) => {
     // console.log(e.target.value);
@@ -93,8 +100,11 @@ class Signup extends Component {
   render() {
     // console.log(this.props);
     // console.log(this.state.loading);
-    const { classes } = this.props;
-    const { loading, errors } = this.state;
+    const {
+      classes,
+      UI: { loading },
+    } = this.props;
+    const { errors } = this.state;
 
     return (
       <div>
@@ -185,5 +195,21 @@ class Signup extends Component {
 }
 Signup.propTypes = {
   classes: PropTypes.object.isRequired,
+  signupUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
 };
-export default withStyles(styles)(Signup);
+
+const mapStatetoProps = (state) => ({
+  user: state.user,
+  UI: state.UI,
+});
+
+const mapActionstoProps = {
+  signupUser,
+};
+
+export default connect(
+  mapStatetoProps,
+  mapActionstoProps
+)(withStyles(styles)(Signup));

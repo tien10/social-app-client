@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import axios from "axios";
-import { Link } from "react-router-dom";
 import {
   withStyles,
   Grid,
@@ -11,31 +9,32 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 import AppIcon from "../images/icon.png";
+import { Link } from "react-router-dom";
 // import AppIcon from "../images/3.svg";
 // import AppIcon from "../images/ninja.png";
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/userActions";
-const styles = {
-  form: {
-    textAlign: "center",
-  },
-  image: {
-    margin: "20px auto 20px auto",
-    // maxWidth: "64px",
-  },
-  pageTitle: { margin: "10px auto 10px auto" },
-  textField: { margin: "10px auto 10px auto" },
-  button: { marginTop: 20 },
-  progress: {
-    position: "absolute",
-  },
-  customError: {
-    color: "red",
-    fontSize: "0.8rem",
-    marginTop: 10,
-  },
-};
-
+// const styles = {
+//   form: {
+//     textAlign: "center",
+//   },
+//   image: {
+//     margin: "20px auto 20px auto",
+//     // maxWidth: "64px",
+//   },
+//   pageTitle: { margin: "10px auto 10px auto" },
+//   textField: { margin: "10px auto 10px auto" },
+//   button: { marginTop: 20 },
+//   progress: {
+//     position: "absolute",
+//   },
+//   customError: {
+//     color: "red",
+//     fontSize: "0.8rem",
+//     marginTop: 10,
+//   },
+// };
+const styles = (theme) => ({ ...theme.spreadThis });
 class Login extends Component {
   constructor() {
     super();
@@ -61,7 +60,7 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-    console.log(this.props);
+    // console.log(this.props);
     this.props.loginUser(userData, this.props.history);
     // axios
     //   .post("/login", userData)
@@ -180,7 +179,7 @@ const mapStatetoProps = (state) => ({
 const mapActionstoProps = {
   loginUser,
 };
-console.log(typeof loginUser);
+// console.log(typeof loginUser);
 // export default connect(
 //   mapStatetoProps,
 //   mapActionstoProps
